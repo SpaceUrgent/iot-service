@@ -1,0 +1,28 @@
+spring:
+  security:
+    user:
+      name: ${CLIENT_NAME}
+      password: ${CLIENT_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://${DB_URL}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        query:
+          fail_on_pagination_over_collection_fetch: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  threads:
+    virtual:
+      enabled: true
+
+telegram:
+  base-url: ${TG_BOT_BASE_URL}
+  bot-token: ${TG_BOT_TOKEN}
+  chat-id: ${TG_CHAT_ID}
