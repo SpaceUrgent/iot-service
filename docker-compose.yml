@@ -1,0 +1,30 @@
+services:
+  iot-api:
+    image: iot-api:latest
+    build:
+      context: .
+    container_name: iot-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      CLIENT_NAME: ${CLIENT_NAME}
+      CLIENT_PASSWORD: ${CLIENT_PASSWORD}
+
+      DB_URL: ${DB_URL}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      TG_BOT_BASE_URL: ${TG_BOT_BASE_URL}
+      TG_BOT_TOKEN: ${TG_BOT_TOKEN}
+      TG_CHAT_ID: ${TG_CHAT_ID}
+
+    networks:
+      - iot-network
+
+networks:
+  iot-network:
+    external: true
