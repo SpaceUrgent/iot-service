@@ -1,29 +1,14 @@
-# ==========================
-# Build stage
-# ==========================
-FROM eclipse-temurin:25-jdk AS builder
+FROM maven:3.9-eclipse-temurin-25 AS builder
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom first (better Docker cache usage)
-COPY .mvn .mvn
-COPY mvnw .
 COPY pom.xml .
+RUN mvn dependency:go-offline
 
-RUN chmod +x mvnw
+COPY src ./src
 
-# Download dependencies
-RUN ./mvnw dependency:go-offline
+RUN mvn clean package -DskipTests
 
-# Copy source
-COPY src src
-
-# Build application
-RUN ./mvnw clean package -DskipTests
-
-# ==========================
-# Runtime stage
-# ==========================
 FROM eclipse-temurin:25-jre
 
 WORKDIR /app
