@@ -37,7 +37,7 @@ public class Notification {
     @Column(name = "tracking_id")
     private String trackingId;
 
-    @Column(name = "error_descriptions")
+    @Column(name = "error_descriptions", columnDefinition = "text")
     private String errorDescription;
 
     private String tag;

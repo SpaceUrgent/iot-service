@@ -19,6 +19,6 @@ public class TelegramClient {
         log.debug("Send message request: {}", request);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity("/sendMessage", request, String.class);
         log.debug("Send message response: {}", responseEntity);
-        return objectMapper.convertValue(responseEntity.getBody(), SendMessageResponse.class);
+        return objectMapper.readValue(responseEntity.getBody(), SendMessageResponse.class);
     }
 }

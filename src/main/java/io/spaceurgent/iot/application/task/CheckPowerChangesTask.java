@@ -45,17 +45,22 @@ public class CheckPowerChangesTask {
     }
 
     private Notification createPowerOnNotification(PowerEvent lastEvent, PowerEvent previousEvent) {
-        return Notification.builder()
+        return getNotificationBuilder()
+                .createdAt(Instant.now())
                 .tag(Notification.Tags.POWER_ON)
                 .text(notificationTextFactory.powerOnNotification(lastEvent.getTimestamp(), previousEvent.getTimestamp()))
                 .build();
     }
 
     private Notification createPowerOffNotification(PowerEvent lastEvent) {
-        return Notification.builder()
-                .createdAt(Instant.now())
+        return getNotificationBuilder()
                 .tag(Notification.Tags.POWER_OFF)
                 .text(notificationTextFactory.powerOffNotification(lastEvent.getTimestamp()))
                 .build();
+    }
+
+    private Notification.NotificationBuilder getNotificationBuilder() {
+        return Notification.builder()
+                .createdAt(Instant.now());
     }
 }

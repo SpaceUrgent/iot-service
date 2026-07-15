@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record SendMessageResponse(
         Boolean ok,
         @JsonProperty("error_code")
-        int errorCode,
+        Integer errorCode,
         String description,
         Result result
 ) {
