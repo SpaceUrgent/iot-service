@@ -5,21 +5,30 @@ import io.spaceurgent.iot.application.dto.NewEventDto;
 import io.spaceurgent.iot.application.task.CheckPowerChangesTask;
 import io.spaceurgent.iot.domain.model.PowerEvent;
 import io.spaceurgent.iot.domain.repository.PowerEventRepository;
-import lombok.RequiredArgsConstructor;
+import io.spaceurgent.iot.infrastructure.config.VirtualThreadExecutor;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 
 @Slf4j
-@Service
-@RequiredArgsConstructor
+@ApplicationScoped
 public class EventService {
     private final ExecutorService executorService;
     private final PowerEventRepository powerEventRepository;
     private final CheckPowerChangesTask checkPowerChangesTask;
+
+    @Inject
+    public EventService(@VirtualThreadExecutor ExecutorService executorService,
+                         PowerEventRepository powerEventRepository,
+                         CheckPowerChangesTask checkPowerChangesTask) {
+        this.executorService = executorService;
+        this.powerEventRepository = powerEventRepository;
+        this.checkPowerChangesTask = checkPowerChangesTask;
+    }
 
     @Transactional
     public void handleEvent(NewEventDto eventDto) {
@@ -33,7 +42,7 @@ public class EventService {
                 .timestamp(eventDto.timestamp())
                 .powerPresent(eventDto.powerPresent())
                 .build();
-        powerEvent = powerEventRepository.save(powerEvent);
+        powerEventRepository.persist(powerEvent);
         PowerEvent finalPowerEvent = powerEvent;
         executorService.execute(() -> checkPowerChangesTask.run(finalPowerEvent));
     }

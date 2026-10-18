@@ -6,22 +6,25 @@ import io.spaceurgent.iot.domain.model.Notification;
 import io.spaceurgent.iot.domain.model.PowerEvent;
 import io.spaceurgent.iot.domain.repository.NotificationRepository;
 import io.spaceurgent.iot.domain.repository.PowerEventRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Objects;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CheckPowerChangesTask {
     private final NotificationTextFactory notificationTextFactory;
     private final NotificationGateway notificationGateway;
     private final PowerEventRepository powerEventRepository;
     private final NotificationRepository notificationRepository;
 
+    @Transactional
     public void run(PowerEvent powerEvent) {
         if (powerEvent == null) {
             log.warn("power event is null");
@@ -41,7 +44,7 @@ public class CheckPowerChangesTask {
                 ? createPowerOnNotification(lastEvent, previousEvent)
                 : createPowerOffNotification(lastEvent);
         notification = notificationGateway.send(notification);
-        notificationRepository.save(notification);
+        notificationRepository.persist(notification);
     }
 
     private Notification createPowerOnNotification(PowerEvent lastEvent, PowerEvent previousEvent) {

@@ -1,3 +1,15 @@
-spring:
+quarkus:
   application:
     name: iot-service
+  datasource:
+    db-kind: postgresql
+  hibernate-orm:
+    database:
+      generation: update
+  http:
+    auth:
+      basic: true
+      permission:
+        default:
+          paths: /*
+          policy: authenticated

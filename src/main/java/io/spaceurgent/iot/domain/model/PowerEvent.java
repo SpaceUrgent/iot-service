@@ -32,12 +32,12 @@ public class PowerEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @Column(nullable = false, updatable = false)
     private Instant timestamp;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "power_present", nullable = false, updatable = false)
     private Boolean powerPresent;
 }

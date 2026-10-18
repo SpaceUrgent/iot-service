@@ -1,20 +1,15 @@
 package io.spaceurgent.iot.domain.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.spaceurgent.iot.domain.model.PowerEvent;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Optional;
 
-public interface PowerEventRepository extends JpaRepository<PowerEvent, Long> {
+@ApplicationScoped
+public class PowerEventRepository implements PanacheRepository<PowerEvent> {
 
-    @Query(
-        """
-        from PowerEvent event
-        where event.id < :id
-        order by event.timestamp desc
-        limit 1
-        """
-    )
-    Optional<PowerEvent> findPreviousById(Long id);
+    public Optional<PowerEvent> findPreviousById(Long id) {
+        return find("id < ?1 order by timestamp desc", id).firstResultOptional();
+    }
 }

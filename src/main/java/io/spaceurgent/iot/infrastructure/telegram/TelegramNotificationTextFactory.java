@@ -2,14 +2,14 @@ package io.spaceurgent.iot.infrastructure.telegram;
 
 import io.spaceurgent.iot.application.interfaces.NotificationTextFactory;
 import io.spaceurgent.iot.shared.TimeUtils;
-import org.springframework.stereotype.Component;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Component
+@ApplicationScoped
 public class TelegramNotificationTextFactory implements NotificationTextFactory {
 
     public static final String POWER_OFF_TEMPLATE = """

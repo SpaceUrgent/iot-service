@@ -1,7 +1,9 @@
 package io.spaceurgent.iot.domain.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.spaceurgent.iot.domain.model.Notification;
-import org.springframework.data.jpa.repository.JpaRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+@ApplicationScoped
+public class NotificationRepository implements PanacheRepository<Notification> {
 }

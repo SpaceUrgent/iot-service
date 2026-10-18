@@ -4,22 +4,27 @@ import io.spaceurgent.iot.application.interfaces.NotificationGateway;
 import io.spaceurgent.iot.domain.model.Notification;
 import io.spaceurgent.iot.infrastructure.telegram.dto.SendMessageRequest;
 import io.spaceurgent.iot.infrastructure.telegram.dto.SendMessageResponse;
-import lombok.RequiredArgsConstructor;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@ApplicationScoped
 public class TelegramNotificationGateway implements NotificationGateway {
-    private final TelegramConfigProperties properties;
-    private final TelegramClient telegramClient;
+
+    @Inject
+    TelegramConfig telegramConfig;
+
+    @Inject
+    @RestClient
+    TelegramRestClient telegramRestClient;
 
     @Override
     public Notification send(Notification notification) {
         SendMessageResponse sendMessageResponse;
         try {
-            sendMessageResponse = telegramClient.sendMessage(toSendMessageRequest(notification));
+            sendMessageResponse = telegramRestClient.sendMessage(toSendMessageRequest(notification));
             if (Boolean.TRUE.equals(sendMessageResponse.ok())) {
                 SendMessageResponse.Result result = sendMessageResponse.result();
                 notification.setStatus(Notification.Status.SENT);
@@ -38,7 +43,7 @@ public class TelegramNotificationGateway implements NotificationGateway {
 
     private SendMessageRequest toSendMessageRequest(Notification notification) {
         return SendMessageRequest.builder()
-                .chatId(properties.getChatId())
+                .chatId(telegramConfig.chatId())
                 .text(notification.getText())
                 .parseMode("HTML")
                 .build();
